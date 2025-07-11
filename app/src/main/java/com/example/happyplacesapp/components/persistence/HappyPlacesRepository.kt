@@ -1,10 +1,8 @@
 package com.example.happyplacesapp.components.persistence
 
-import com.example.happyplacesapp.components.HappyPlace
+import com.example.happyplacesapp.components.persistence.HappyPlace
 import com.example.happyplacesapp.components.data.HappyPlaceDao
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.withContext
 
 class HappyPlacesRepository(private val dao: HappyPlaceDao) {
 
@@ -18,4 +16,3 @@ class HappyPlacesRepository(private val dao: HappyPlaceDao) {
         dao.deletePlace(place)
     }
 }
-

@@ -6,7 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.example.happyplacesapp.components.HappyPlace
+import com.example.happyplacesapp.components.persistence.HappyPlace
 import kotlinx.coroutines.flow.Flow
 
 

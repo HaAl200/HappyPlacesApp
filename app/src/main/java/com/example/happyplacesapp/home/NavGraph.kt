@@ -1,39 +1,26 @@
 package com.example.happyplacesapp.home
 
-import HomeScreen
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.navigation.compose.*
-import org.osmdroid.util.GeoPoint
-
+import androidx.compose.runtime.getValue
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
-fun AppNavGraph(
-    viewModel: HappyPlacesViewModel,
-    selectedPoint: GeoPoint?,
-    onSelectPoint: (GeoPoint) -> Unit
-) {
-    val navController = rememberNavController()
-
-    NavHost(navController = navController, startDestination = "home") {
-
-        composable("home") {
-            HomeScreen(
-                places = viewModel.places.collectAsState().value,
-                selectedPoint = selectedPoint,
-                onPointSelected = onSelectPoint,
-                onAddNewPlace = { navController.navigate("addPlace") }
+fun HappyPlacesNavHost(navController: NavHostController) {
+    NavHost(navController = navController, startDestination = "places_list") {
+        composable("places_list") {
+            val viewModel: HappyPlacesViewModel = viewModel()
+            val places by viewModel.placesFlow.collectAsState(initial = emptyList())
+            PlacesListScreen(
+                places = places,
+                placesFlow = viewModel.placesFlow,
+                onSave = { /* TODO: Implementiere speichern */ },
+                onBack = { /* TODO: Implementiere zurück navigieren */ }
             )
         }
-
-        composable("addPlace") {
-            AddPlaceScreen(
-                selectedPoint = selectedPoint,
-                onSave = { newPlace ->
-                    viewModel.addPlace(newPlace)
-                },
-                onBack = { navController.popBackStack() }
-            )
-        }
+        // weitere Composables ...
     }
 }

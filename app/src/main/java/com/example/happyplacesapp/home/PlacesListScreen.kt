@@ -1,39 +1,29 @@
+package com.example.happyplacesapp.home
+
+import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Alignment
+import androidx.compose.material3.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.example.happyplacesapp.components.HappyPlace
-import kotlinx.coroutines.flow.StateFlow
+import com.example.happyplacesapp.components.persistence.HappyPlace
+import kotlinx.coroutines.flow.Flow
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlacesListScreen(
-    placesFlow: StateFlow<List<HappyPlace>>,
+    places: List<HappyPlace>,
+    placesFlow: Flow<List<HappyPlace>>,
+    onSave: () -> Unit,
     onBack: () -> Unit
 ) {
-    val places by placesFlow.collectAsState()
-
-    Column {
-        Text("Gespeicherte Orte", style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(16.dp))
-
-        LazyColumn {
-            items(places) { place ->
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text(place.title, style = MaterialTheme.typography.titleMedium)
-                    Text(place.description, style = MaterialTheme.typography.bodySmall)
-                    Text("Notiz: ${place.note}", style = MaterialTheme.typography.bodySmall)
-                }
+    Scaffold(
+        topBar = { TopAppBar(title = { Text("Meine Orte") }) }
+    ) { padding ->
+        Column(modifier = Modifier.padding(padding)) {
+            places.forEach { place ->
+                Text("${place.name} - ${place.description}")
             }
-        }
-
-        Button(onClick = onBack, modifier = Modifier.align(Alignment.CenterHorizontally).padding(16.dp)) {
-            Text("Zurück")
+            Button(onClick = onBack) { Text("Zurück") }
         }
     }
 }

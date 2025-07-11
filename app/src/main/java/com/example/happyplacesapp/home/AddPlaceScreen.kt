@@ -1,83 +1,61 @@
 package com.example.happyplacesapp.home
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
+import androidx.compose.material.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
-import com.example.happyplacesapp.components.HappyPlace
-import org.osmdroid.util.GeoPoint
+import com.example.happyplacesapp.components.persistence.HappyPlace
 
 @Composable
 fun AddPlaceScreen(
-    onSave: (HappyPlace) -> Unit,
-    selectedPoint: GeoPoint?,
-    onBack: () -> Unit
+    onPlaceSaved: (HappyPlace) -> Unit,
+    onCancel: () -> Unit
 ) {
-    var title by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
-    val context = LocalContext.current
+    var notes by remember { mutableStateOf("") }
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp)) {
+    // Dummy Koordinaten, in Praxis per Map auswählen!
+    var latitude by remember { mutableStateOf(0.0) }
+    var longitude by remember { mutableStateOf(0.0) }
+    // Dummy Foto-URI
+    var photoUri by remember { mutableStateOf<String?>(null) }
 
-        Text(text = "Neuen Ort hinzufügen", modifier = Modifier.padding(bottom = 8.dp))
-
-        BasicTextField(
-            value = title,
-            onValueChange = { title = it },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            decorationBox = { innerTextField ->
-                Box(Modifier.padding(4.dp)) {
-                    if (title.isEmpty()) Text("Titel eingeben")
-                    innerTextField()
-                }
-            }
+    Column {
+        OutlinedTextField(
+            value = name,
+            onValueChange = { name = it },
+            label = { Text("Name") }
         )
-
-        BasicTextField(
+        OutlinedTextField(
             value = description,
             onValueChange = { description = it },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            decorationBox = { innerTextField ->
-                Box(Modifier.padding(4.dp)) {
-                    if (description.isEmpty()) Text("Beschreibung eingeben")
-                    innerTextField()
-                }
-            }
+            label = { Text("Beschreibung") }
+        )
+        OutlinedTextField(
+            value = notes,
+            onValueChange = { notes = it },
+            label = { Text("Notizen") }
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(
-            onClick = {
-                val place = HappyPlace(
-                    id = 0, // Wird von Room gesetzt
-                    title = title,
+        Button(onClick = {
+            onPlaceSaved(
+                HappyPlace(
+                    name = name,
                     description = description,
-                    image = "", // Optional: Bild später hinzufügen
-                    latitude = selectedPoint?.latitude ?: 0.0,
-                    longitude = selectedPoint?.longitude ?: 0.0
+                    latitude = latitude,
+                    longitude = longitude,
+                    photoUri = photoUri,
+                    notes = notes
                 )
-                onSave(place)
-                onBack()
-            },
-            enabled = title.isNotBlank() && description.isNotBlank() && selectedPoint != null
-        ) {
-            Text("Speichern")
+            )
+        }) {
+            Text("Ort speichern")
         }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Button(onClick = onBack) {
+        Button(onClick = onCancel) {
             Text("Abbrechen")
         }
     }
